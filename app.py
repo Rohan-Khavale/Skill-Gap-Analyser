@@ -13,6 +13,7 @@ pipeline = joblib.load(MODEL_PATH)
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 CORS(app)
+from flask import send_from_directory
 
 # helper to compute top tokens for prediction (linear model)
 def explain_prediction(text, top_k=6):
@@ -60,7 +61,7 @@ def predict():
         "explanation": explanation
     })
 
-# serve demo static page
+# serve frontend at root
 @app.route("/")
 def index():
     return send_from_directory("static", "index.html")
