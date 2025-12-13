@@ -1,0 +1,36 @@
+role,skills_text
+software engineer,data structures algorithms python git system design
+software engineer,object oriented programming java c++ debugging algorithms
+software engineer,python testing git ci cd problem solving
+software engineer,distributed systems scalability system design databases
+software engineer,linux scripting performance optimization
+
+backend developer,python sql databases apis rest system design
+backend developer,nodejs express mongodb postgresql authentication
+backend developer,java spring boot microservices sql
+backend developer,api development caching redis message queues
+backend developer,docker kubernetes backend scalability
+
+frontend developer,html css javascript react ui ux
+frontend developer,typescript react redux css
+frontend developer,web performance accessibility responsive design
+frontend developer,nextjs react frontend optimization
+frontend developer,design systems tailwind javascript
+
+data scientist,python statistics pandas numpy machine learning
+data scientist,sql data analysis visualization seaborn
+data scientist,regression classification data preprocessing
+data scientist,feature engineering model evaluation
+data scientist,jupyter notebooks experimentation
+
+devops,linux docker kubernetes ci cd cloud
+devops,aws terraform infrastructure automation
+devops,monitoring logging prometheus grafana
+devops,site reliability engineering scalability
+devops,container orchestration devops pipelines
+
+investment banker,financial modeling valuation excel accounting
+investment banker,corporate finance mergers acquisitions
+investment banker,powerpoint pitch decks financial analysis
+investment banker,balance sheets income statements cash flow
+investment banker,capital markets deal structuring
