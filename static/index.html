@@ -1,38 +1,93 @@
-from flask import Flask, request, jsonify, send_from_directory
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Skill Gap Analyser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-app = Flask(__name__, static_folder="static")
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+    }
 
-@app.route("/")
-def home():
-    return send_from_directory("static", "index.html")
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
 
-@app.route("/predict", methods=["POST"])
-def predict():
-    data = request.get_json(force=True)
+    h1 {
+      text-align: center;
+    }
 
-    # Support both raw text and structured payload
-    if "text" in data:
-        text = data["text"]
-    else:
-        text = f"""
-Name: {data.get('name','')}
-Status: {data.get('status','')}
-Field: {data.get('field','')}
-Skills: {data.get('skills','')}
-Target Role: {data.get('target','')}
-""".strip()
+    input, textarea, button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      font-size: 14px;
+    }
 
-    pred = pipeline.predict([text])[0]
-    explanation = explain_prediction(text)
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
 
-    return jsonify({
-        "prediction": pred,
-        "explanation": explanation
-    })
+    pre {
+      background: #111;
+      color: #00ff90;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
 
-@app.route("/healthz")
-def healthz():
-    return "ok", 200
+  <div class="card">
+    <h1>Skill Gap Analyser</h1>
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=False)
+    <input id="name" placeholder="Your Name" />
+    <input id="status" placeholder="Student / Working Professional" />
+    <input id="field" placeholder="Field (CS, EE, Finance...)" />
+    <textarea id="skills" placeholder="Your skills (comma separated)"></textarea>
+    <input id="target" placeholder="Target Job Role" />
+
+    <button onclick="analyze()">Analyze</button>
+
+    <pre id="output">{}</pre>
+  </div>
+
+  <script>
+    async function analyze() {
+      const payload = {
+        name: document.getElementById("name").value,
+        status: document.getElementById("status").value,
+        field: document.getElementById("field").value,
+        skills: document.getElementById("skills").value,
+        target: document.getElementById("target").value
+      };
+
+      const res = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      document.getElementById("output").textContent =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
