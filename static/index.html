@@ -1,158 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Skill Gap Analyser</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+from flask import Flask, request, jsonify, send_from_directory
 
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f6f8fa;
-      margin: 0;
-      padding: 0;
-    }
+app = Flask(__name__, static_folder="static")
 
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+@app.route("/")
+def home():
+    return send_from_directory("static", "index.html")
 
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
+@app.route("/predict", methods=["POST"])
+def predict():
+    data = request.get_json(force=True)
 
-    p.subtitle {
-      text-align: center;
-      color: #555;
-      margin-bottom: 30px;
-    }
+    # Support both raw text and structured payload
+    if "text" in data:
+        text = data["text"]
+    else:
+        text = f"""
+Name: {data.get('name','')}
+Status: {data.get('status','')}
+Field: {data.get('field','')}
+Skills: {data.get('skills','')}
+Target Role: {data.get('target','')}
+""".strip()
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 18px;
-      margin-bottom: 6px;
-    }
+    pred = pipeline.predict([text])[0]
+    explanation = explain_prediction(text)
 
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
+    return jsonify({
+        "prediction": pred,
+        "explanation": explanation
+    })
 
-    textarea {
-      resize: vertical;
-    }
+@app.route("/healthz")
+def healthz():
+    return "ok", 200
 
-    button {
-      margin-top: 25px;
-      padding: 14px;
-      width: 100%;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      background: #2563eb;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .result {
-      margin-top: 30px;
-      background: #f1f5f9;
-      padding: 20px;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      font-size: 14px;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 12px;
-      color: #777;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <h1>Skill Gap Analyser</h1>
-    <p class="subtitle">
-      Understand where you stand today and what you need to reach your target role
-    </p>
-
-    <label for="name">Your Name</label>
-    <input id="name" type="text" placeholder="e.g. Rohan Khavale" />
-
-    <label for="currentStatus">Current Status</label>
-    <select id="currentStatus">
-      <option value="">Select one</option>
-      <option>Student</option>
-      <option>Working Professional</option>
-      <option>Fresher / Job Seeker</option>
-      <option>Other</option>
-    </select>
-
-    <label for="field">What are you studying / working on?</label>
-    <input id="field" type="text" placeholder="e.g. Computer Engineering, Data Science, BPO, MBA Prep" />
-
-    <label for="currentSkills">Current Skills (comma separated)</label>
-    <textarea id="currentSkills" rows="4"
-      placeholder="e.g. Python, SQL, Excel, Machine Learning, Communication"></textarea>
-
-    <label for="targetRole">Target Job / Role</label>
-    <input id="targetRole" type="text" placeholder="e.g. Data Analyst, ML Engineer, Software Developer" />
-
-    <button onclick="analyze()">Analyze Skill Gap</button>
-
-    <div id="output" class="result" style="display:none;"></div>
-
-    <footer>
-      Skill Gap Analyser • Built for learning & career clarity
-    </footer>
-  </div>
-
-  <script>
-    async function analyze() {
-      const payload = {
-        name: document.getElementById("name").value,
-        status: document.getElementById("currentStatus").value,
-        field: document.getElementById("field").value,
-        skills: document.getElementById("currentSkills").value,
-        target: document.getElementById("targetRole").value
-      };
-
-      if (!payload.name || !payload.skills || !payload.target) {
-        alert("Please fill at least Name, Current Skills, and Target Role.");
-        return;
-      }
-
-      const response = await fetch("/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      const outputDiv = document.getElementById("output");
-      outputDiv.style.display = "block";
-      outputDiv.textContent =
-        "Analysis Result:\n\n" + JSON.stringify(result, null, 2);
-    }
-  </script>
-</body>
-</html>
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=False)
