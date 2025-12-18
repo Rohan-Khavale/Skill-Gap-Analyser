@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+.venv_win/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data caches
+.cache/
+datasets/
+hf_cache/
+
+# Large raw datasets (keep structure, not files)
+data/raw/job_descriptions/*.csv
+!data/raw/job_descriptions/jd_template.csv
+
+# Models (keep trained artifacts only if intended)
+*.pt
+*.bin
