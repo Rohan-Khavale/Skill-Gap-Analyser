@@ -1,166 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Skill Gap Analyser</title>
+  <meta charset="UTF-8" />
+  <title>Skill Gap Analyser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 40px;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+    }
 
-        .card {
-            max-width: 720px;
-            margin: auto;
-            background: #ffffff;
-            padding: 28px;
-            border-radius: 10px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-        }
+    .card {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
 
-        h1 {
-            margin-top: 0;
-            text-align: center;
-            color: #1f2937;
-        }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-        p.subtitle {
-            text-align: center;
-            color: #555;
-            margin-bottom: 30px;
-        }
+    p.subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 30px;
+    }
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 16px;
-            margin-bottom: 6px;
-        }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 20px;
+    }
 
-        select, button {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
 
-        select[multiple] {
-            height: 160px;
-        }
+    .skills-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-        small {
-            color: #666;
-        }
+    .skill-item {
+      background: #eef2ff;
+      padding: 6px 10px;
+      border-radius: 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
 
-        button {
-            margin-top: 24px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    .skill-item input {
+      margin-right: 6px;
+    }
 
-        button:hover {
-            background: #1e40af;
-        }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-        pre {
-            margin-top: 24px;
-            background: #111827;
-            color: #d1d5db;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 13px;
-        }
-    </style>
+    button:hover {
+      background: #1e40af;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .result h3 {
+      margin-top: 0;
+    }
+
+    .pill {
+      display: inline-block;
+      background: #e5e7eb;
+      padding: 6px 10px;
+      border-radius: 12px;
+      margin: 4px;
+      font-size: 13px;
+    }
+
+    .missing {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .present {
+      background: #dcfce7;
+      color: #166534;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="card">
-    <h1>Skill Gap Analyser</h1>
-    <p class="subtitle">
-        Identify missing skills required for your target role using ML-based analysis
-    </p>
+  <h1>Skill Gap Analyser</h1>
+  <p class="subtitle">Analyse missing skills using Machine Learning</p>
 
-    <form id="analyzeForm">
+  <label>Name</label>
+  <input type="text" id="name" placeholder="Your name" />
 
-        <!-- TARGET ROLE -->
-        <label for="target">Target Role</label>
-        <select id="target" required>
-            <option value="">Select a role</option>
-            <option value="software engineer">Software Engineer</option>
-            <option value="backend developer">Backend Developer</option>
-            <option value="frontend developer">Frontend Developer</option>
-            <option value="data scientist">Data Scientist</option>
-            <option value="devops engineer">DevOps Engineer</option>
-        </select>
+  <label>Current Status</label>
+  <select id="status">
+    <option>Student</option>
+    <option>Working Professional</option>
+    <option>Fresher</option>
+  </select>
 
-        <!-- SKILLS -->
-        <label for="skills">Your Skills</label>
-        <select id="skills" multiple>
-            <option>python</option>
-            <option>java</option>
-            <option>c++</option>
-            <option>data structures</option>
-            <option>algorithms</option>
-            <option>git</option>
-            <option>sql</option>
-            <option>html</option>
-            <option>css</option>
-            <option>javascript</option>
-            <option>react</option>
-            <option>machine learning</option>
-            <option>statistics</option>
-            <option>docker</option>
-            <option>linux</option>
-        </select>
-        <small>Hold ⌘ (Mac) or Ctrl (Windows) to select multiple skills</small>
+  <label>Target Role</label>
+  <select id="target">
+    <option value="software engineer">Software Engineer</option>
+    <option value="backend developer">Backend Developer</option>
+    <option value="frontend developer">Frontend Developer</option>
+    <option value="data scientist">Data Scientist</option>
+    <option value="devops">DevOps Engineer</option>
+    <option value="investment banker">Investment Banker</option>
+  </select>
 
-        <!-- SUBMIT -->
-        <button type="submit">Analyse Skill Gap</button>
-    </form>
+  <label>Select Your Current Skills</label>
+  <div class="skills-box" id="skillsBox">
+    <!-- skills injected by JS -->
+  </div>
 
-    <!-- RESULT -->
-    <pre id="result">Awaiting input…</pre>
+  <button onclick="analyze()">Analyze Skill Gap</button>
+
+  <div class="result" id="result">
+    <h3>Analysis Result</h3>
+    <p><strong>Target Role:</strong> <span id="resRole"></span></p>
+
+    <p><strong>Your Skills:</strong></p>
+    <div id="yourSkills"></div>
+
+    <p><strong>Missing Skills:</strong></p>
+    <div id="missingSkills"></div>
+  </div>
 </div>
 
 <script>
-document.getElementById("analyzeForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
+  const SKILLS = [
+    "python", "java", "c++", "sql", "git", "html", "css", "javascript",
+    "react", "nodejs", "machine learning", "statistics", "pandas",
+    "system design", "docker", "kubernetes", "linux",
+    "cloud", "ci/cd", "data structures", "algorithms"
+  ];
 
-    const skillsSelect = document.getElementById("skills");
-    const selectedSkills = Array.from(skillsSelect.selectedOptions)
-        .map(opt => opt.value)
-        .join(", ");
+  const skillsBox = document.getElementById("skillsBox");
+
+  SKILLS.forEach(skill => {
+    const label = document.createElement("label");
+    label.className = "skill-item";
+    label.innerHTML = `<input type="checkbox" value="${skill}">${skill}`;
+    skillsBox.appendChild(label);
+  });
+
+  async function analyze() {
+    const selectedSkills = [...document.querySelectorAll("#skillsBox input:checked")]
+      .map(cb => cb.value);
 
     const payload = {
-        skills: selectedSkills,
-        target: document.getElementById("target").value
+      name: document.getElementById("name").value,
+      status: document.getElementById("status").value,
+      target: document.getElementById("target").value,
+      skills: selectedSkills.join(", ")
     };
 
-    try {
-        const response = await fetch("/predict", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
+    const res = await fetch("/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-        const data = await response.json();
-        document.getElementById("result").textContent =
-            JSON.stringify(data, null, 2);
+    const data = await res.json();
 
-    } catch (err) {
-        document.getElementById("result").textContent =
-            "Error connecting to backend.";
-    }
-});
+    document.getElementById("result").style.display = "block";
+    document.getElementById("resRole").innerText = data.target_role || payload.target;
+
+    const yourDiv = document.getElementById("yourSkills");
+    yourDiv.innerHTML = "";
+    selectedSkills.forEach(s => {
+      yourDiv.innerHTML += `<span class="pill present">${s}</span>`;
+    });
+
+    const missDiv = document.getElementById("missingSkills");
+    missDiv.innerHTML = "";
+    (data.missing_skills || []).forEach(s => {
+      missDiv.innerHTML += `<span class="pill missing">${s}</span>`;
+    });
+  }
 </script>
 
 </body>
