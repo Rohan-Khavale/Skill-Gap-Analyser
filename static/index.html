@@ -1,190 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Skill Gap Analyser</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
       margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
       padding: 40px;
     }
 
     .card {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     h1 {
+      font-size: 32px;
+      font-weight: 700;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      background: linear-gradient(to right, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    p.subtitle {
+    .subtitle {
       text-align: center;
-      color: #555;
-      margin-bottom: 30px;
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 36px;
     }
 
     label {
-      font-weight: bold;
       display: block;
-      margin-top: 20px;
+      font-size: 13px;
+      margin-top: 22px;
+      margin-bottom: 6px;
+      color: #cbd5f5;
     }
 
     input, select {
       width: 100%;
-      padding: 10px;
-      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: #e5e7eb;
       font-size: 14px;
+      outline: none;
     }
 
-    .skills-box {
+    input::placeholder {
+      color: #9ca3af;
+    }
+
+    .skills-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 10px;
     }
 
-    .skill-item {
-      background: #eef2ff;
-      padding: 6px 10px;
-      border-radius: 16px;
+    .skill-chip {
+      padding: 8px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
       font-size: 13px;
       cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.2s ease;
     }
 
-    .skill-item input {
-      margin-right: 6px;
+    .skill-chip input {
+      display: none;
+    }
+
+    .skill-chip.selected {
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      color: #020617;
+      font-weight: 500;
     }
 
     button {
-      margin-top: 30px;
+      margin-top: 36px;
       width: 100%;
       padding: 14px;
-      font-size: 16px;
-      background: #2563eb;
-      color: white;
+      border-radius: 10px;
       border: none;
-      border-radius: 6px;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      color: #020617;
+      transition: transform 0.15s ease;
     }
 
     button:hover {
-      background: #1e40af;
+      transform: translateY(-1px);
     }
 
     .result {
-      margin-top: 30px;
-      padding: 20px;
-      background: #f8fafc;
-      border-radius: 8px;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
       display: none;
     }
 
     .result h3 {
-      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+      color: #e5e7eb;
     }
 
     .pill {
       display: inline-block;
-      background: #e5e7eb;
-      padding: 6px 10px;
-      border-radius: 12px;
-      margin: 4px;
+      padding: 8px 14px;
+      border-radius: 20px;
       font-size: 13px;
-    }
-
-    .missing {
-      background: #fee2e2;
-      color: #991b1b;
+      margin: 6px 6px 0 0;
     }
 
     .present {
-      background: #dcfce7;
-      color: #166534;
+      background: rgba(34,197,94,0.2);
+      color: #86efac;
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+
+    .missing {
+      background: rgba(239,68,68,0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+      color: #6b7280;
     }
   </style>
 </head>
 
 <body>
+<div class="container">
+  <div class="card">
+    <h1>Skill Gap Analyser</h1>
+    <p class="subtitle">AI-driven analysis of career readiness</p>
 
-<div class="card">
-  <h1>Skill Gap Analyser</h1>
-  <p class="subtitle">Analyse missing skills using Machine Learning</p>
+    <label>Name</label>
+    <input id="name" placeholder="Your name">
 
-  <label>Name</label>
-  <input type="text" id="name" placeholder="Your name" />
+    <label>Current Status</label>
+    <select id="status">
+      <option>Student</option>
+      <option>Fresher</option>
+      <option>Working Professional</option>
+    </select>
 
-  <label>Current Status</label>
-  <select id="status">
-    <option>Student</option>
-    <option>Working Professional</option>
-    <option>Fresher</option>
-  </select>
+    <label>Target Role</label>
+    <select id="target">
+      <option value="software engineer">Software Engineer</option>
+      <option value="backend developer">Backend Developer</option>
+      <option value="frontend developer">Frontend Developer</option>
+      <option value="data scientist">Data Scientist</option>
+      <option value="devops">DevOps Engineer</option>
+      <option value="investment banker">Investment Banker</option>
+    </select>
 
-  <label>Target Role</label>
-  <select id="target">
-    <option value="software engineer">Software Engineer</option>
-    <option value="backend developer">Backend Developer</option>
-    <option value="frontend developer">Frontend Developer</option>
-    <option value="data scientist">Data Scientist</option>
-    <option value="devops">DevOps Engineer</option>
-    <option value="investment banker">Investment Banker</option>
-  </select>
+    <label>Select Your Skills</label>
+    <div class="skills-grid" id="skillsGrid"></div>
 
-  <label>Select Your Current Skills</label>
-  <div class="skills-box" id="skillsBox">
-    <!-- skills injected by JS -->
+    <button onclick="analyze()">Analyse Skill Gap</button>
+
+    <div class="result" id="result">
+      <h3>Analysis Summary</h3>
+
+      <p><strong>Current Skills</strong></p>
+      <div id="yourSkills"></div>
+
+      <p style="margin-top:18px;"><strong>Skills to Acquire</strong></p>
+      <div id="missingSkills"></div>
+    </div>
   </div>
 
-  <button onclick="analyze()">Analyze Skill Gap</button>
-
-  <div class="result" id="result">
-    <h3>Analysis Result</h3>
-    <p><strong>Target Role:</strong> <span id="resRole"></span></p>
-
-    <p><strong>Your Skills:</strong></p>
-    <div id="yourSkills"></div>
-
-    <p><strong>Missing Skills:</strong></p>
-    <div id="missingSkills"></div>
-  </div>
+  <footer>
+    Skill Gap Analyser · ML-powered career intelligence
+  </footer>
 </div>
 
 <script>
   const SKILLS = [
-    "python", "java", "c++", "sql", "git", "html", "css", "javascript",
-    "react", "nodejs", "machine learning", "statistics", "pandas",
-    "system design", "docker", "kubernetes", "linux",
-    "cloud", "ci/cd", "data structures", "algorithms"
+    "python","java","c++","sql","git","html","css","javascript",
+    "react","nodejs","machine learning","statistics","pandas",
+    "system design","docker","kubernetes","linux","cloud",
+    "ci/cd","data structures","algorithms"
   ];
 
-  const skillsBox = document.getElementById("skillsBox");
-
+  const grid = document.getElementById("skillsGrid");
   SKILLS.forEach(skill => {
-    const label = document.createElement("label");
-    label.className = "skill-item";
-    label.innerHTML = `<input type="checkbox" value="${skill}">${skill}`;
-    skillsBox.appendChild(label);
+    const chip = document.createElement("div");
+    chip.className = "skill-chip";
+    chip.innerText = skill;
+    chip.onclick = () => chip.classList.toggle("selected");
+    grid.appendChild(chip);
   });
 
   async function analyze() {
-    const selectedSkills = [...document.querySelectorAll("#skillsBox input:checked")]
-      .map(cb => cb.value);
+    const selected = [...document.querySelectorAll(".skill-chip.selected")]
+      .map(el => el.innerText);
 
     const payload = {
       name: document.getElementById("name").value,
       status: document.getElementById("status").value,
       target: document.getElementById("target").value,
-      skills: selectedSkills.join(", ")
+      skills: selected.join(", ")
     };
 
     const res = await fetch("/predict", {
@@ -196,21 +249,15 @@
     const data = await res.json();
 
     document.getElementById("result").style.display = "block";
-    document.getElementById("resRole").innerText = data.target_role || payload.target;
 
-    const yourDiv = document.getElementById("yourSkills");
-    yourDiv.innerHTML = "";
-    selectedSkills.forEach(s => {
-      yourDiv.innerHTML += `<span class="pill present">${s}</span>`;
-    });
+    const ys = document.getElementById("yourSkills");
+    ys.innerHTML = "";
+    selected.forEach(s => ys.innerHTML += `<span class="pill present">${s}</span>`);
 
-    const missDiv = document.getElementById("missingSkills");
-    missDiv.innerHTML = "";
-    (data.missing_skills || []).forEach(s => {
-      missDiv.innerHTML += `<span class="pill missing">${s}</span>`;
-    });
+    const ms = document.getElementById("missingSkills");
+    ms.innerHTML = "";
+    (data.missing_skills || []).forEach(s => ms.innerHTML += `<span class="pill missing">${s}</span>`);
   }
 </script>
-
 </body>
 </html>
