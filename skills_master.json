@@ -1,0 +1,36 @@
+{
+  "technical": [
+    "python",
+    "java",
+    "c++",
+    "sql",
+    "git",
+    "html",
+    "css",
+    "javascript",
+    "react",
+    "nodejs",
+    "docker",
+    "kubernetes",
+    "linux",
+    "ci/cd",
+    "system design",
+    "data structures",
+    "algorithms"
+  ],
+  "analytics": [
+    "statistics",
+    "data analysis",
+    "data visualization",
+    "machine learning",
+    "pandas",
+    "excel"
+  ],
+  "finance": [
+    "financial modeling",
+    "valuation",
+    "accounting",
+    "corporate finance",
+    "powerpoint"
+  ]
+}

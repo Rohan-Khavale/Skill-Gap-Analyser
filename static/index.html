@@ -169,7 +169,7 @@
 <div class="container">
   <div class="card">
     <h1>Skill Gap Analyser</h1>
-    <p class="subtitle">AI-driven analysis of career readiness</p>
+    <p class="subtitle">ML-driven analysis of career readiness</p>
 
     <label>Name</label>
     <input id="name" placeholder="Your name">
@@ -182,7 +182,7 @@
     </select>
 
     <label>Target Role</label>
-    <select id="target">
+    <select id="target" onchange="loadSkillsForRole()">
       <option value="software engineer">Software Engineer</option>
       <option value="backend developer">Backend Developer</option>
       <option value="frontend developer">Frontend Developer</option>
@@ -191,7 +191,7 @@
       <option value="investment banker">Investment Banker</option>
     </select>
 
-    <label>Select Your Skills</label>
+    <label>Select Your Relevant Skills</label>
     <div class="skills-grid" id="skillsGrid"></div>
 
     <button onclick="analyze()">Analyse Skill Gap</button>
@@ -213,51 +213,63 @@
 </div>
 
 <script>
-  const SKILLS = [
-    "python","java","c++","sql","git","html","css","javascript",
-    "react","nodejs","machine learning","statistics","pandas",
-    "system design","docker","kubernetes","linux","cloud",
-    "ci/cd","data structures","algorithms"
-  ];
+async function loadSkillsForRole(extraSkills = []) {
+  const role = document.getElementById("target").value.toLowerCase();
+
+  const res = await fetch(`/skills/${role}`);
+  const data = await res.json();
 
   const grid = document.getElementById("skillsGrid");
-  SKILLS.forEach(skill => {
+  grid.innerHTML = "";
+
+  const mergedSkills = new Set([...(data.skills || []), ...extraSkills]);
+
+  [...mergedSkills].forEach(skill => {
     const chip = document.createElement("div");
     chip.className = "skill-chip";
     chip.innerText = skill;
     chip.onclick = () => chip.classList.toggle("selected");
     grid.appendChild(chip);
   });
+}
 
-  async function analyze() {
-    const selected = [...document.querySelectorAll(".skill-chip.selected")]
-      .map(el => el.innerText);
+async function analyze() {
+  const selected = [...document.querySelectorAll(".skill-chip.selected")]
+    .map(el => el.innerText);
 
-    const payload = {
-      name: document.getElementById("name").value,
-      status: document.getElementById("status").value,
-      target: document.getElementById("target").value,
-      skills: selected.join(", ")
-    };
+  const payload = {
+    name: document.getElementById("name").value,
+    status: document.getElementById("status").value,
+    target: document.getElementById("target").value.toLowerCase(),
+    skills: selected.join(", ")
+  };
 
-    const res = await fetch("/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+  const res = await fetch("/predict", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    document.getElementById("result").style.display = "block";
+  document.getElementById("result").style.display = "block";
 
-    const ys = document.getElementById("yourSkills");
-    ys.innerHTML = "";
-    selected.forEach(s => ys.innerHTML += `<span class="pill present">${s}</span>`);
+  const ys = document.getElementById("yourSkills");
+  ys.innerHTML = "";
+  selected.forEach(s => ys.innerHTML += `<span class="pill present">${s}</span>`);
 
-    const ms = document.getElementById("missingSkills");
-    ms.innerHTML = "";
-    (data.missing_skills || []).forEach(s => ms.innerHTML += `<span class="pill missing">${s}</span>`);
+  const ms = document.getElementById("missingSkills");
+  ms.innerHTML = "";
+  (data.missing_skills || []).forEach(s => ms.innerHTML += `<span class="pill missing">${s}</span>`);
+
+  // 🔥 Add missing skills back to selector
+  if (data.missing_skills && data.missing_skills.length > 0) {
+    loadSkillsForRole(data.missing_skills);
   }
+}
+
+// Load skills on page load
+loadSkillsForRole();
 </script>
 </body>
 </html>
