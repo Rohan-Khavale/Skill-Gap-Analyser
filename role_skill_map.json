@@ -1,0 +1,32 @@
+{
+  "software engineer": {
+    "primary_domains": ["technical"],
+    "secondary_domains": ["analytics"],
+    "optional_domains": []
+  },
+  "backend developer": {
+    "primary_domains": ["technical"],
+    "secondary_domains": ["analytics"],
+    "optional_domains": []
+  },
+  "frontend developer": {
+    "primary_domains": ["technical"],
+    "secondary_domains": [],
+    "optional_domains": []
+  },
+  "data scientist": {
+    "primary_domains": ["analytics"],
+    "secondary_domains": ["technical"],
+    "optional_domains": []
+  },
+  "devops": {
+    "primary_domains": ["technical"],
+    "secondary_domains": [],
+    "optional_domains": []
+  },
+  "investment banker": {
+    "primary_domains": ["finance"],
+    "secondary_domains": ["analytics"],
+    "optional_domains": []
+  }
+}
