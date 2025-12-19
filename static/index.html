@@ -162,6 +162,23 @@
       font-size: 12px;
       color: #6b7280;
     }
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 14px;
+      background: #fff;
+      top: -10px;
+      animation: fall 3s linear infinite;
+      z-index: 1000;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
@@ -204,6 +221,22 @@
 
       <p style="margin-top:18px;"><strong>Skills to Acquire</strong></p>
       <div id="missingSkills"></div>
+    </div>
+
+    <!-- 🎉 Celebration Modal -->
+    <div id="celebrationModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; align-items:center; justify-content:center;">
+      <div style="background:linear-gradient(135deg,#60a5fa,#a78bfa); padding:40px; border-radius:20px; text-align:center; color:#020617; max-width:420px; box-shadow:0 40px 100px rgba(0,0,0,0.6);">
+        <h2 style="font-size:28px; margin-bottom:10px;">🎉 Congratulations!</h2>
+        <p style="font-size:16px; margin-bottom:20px;">
+          You already have <strong>all the required skills</strong> for this role.
+        </p>
+        <p style="font-size:14px; opacity:0.85;">
+          You are job‑ready 🚀
+        </p>
+        <button onclick="closeCelebration()" style="margin-top:20px; padding:12px 20px; border:none; border-radius:10px; font-weight:600; cursor:pointer;">
+          Awesome!
+        </button>
+      </div>
     </div>
   </div>
 
@@ -262,10 +295,31 @@ async function analyze() {
   ms.innerHTML = "";
   (data.missing_skills || []).forEach(s => ms.innerHTML += `<span class="pill missing">${s}</span>`);
 
+  if (!data.missing_skills || data.missing_skills.length === 0) {
+    document.getElementById("celebrationModal").style.display = "flex";
+    launchConfetti();
+  }
+
   // 🔥 Add missing skills back to selector
   if (data.missing_skills && data.missing_skills.length > 0) {
     loadSkillsForRole(data.missing_skills);
   }
+}
+
+function launchConfetti() {
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = `hsl(${Math.random() * 360},100%,70%)`;
+    c.style.animationDuration = 2 + Math.random() * 2 + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4000);
+  }
+}
+
+function closeCelebration() {
+  document.getElementById("celebrationModal").style.display = "none";
 }
 
 // Load skills on page load
